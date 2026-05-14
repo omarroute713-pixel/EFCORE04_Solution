@@ -414,16 +414,29 @@ namespace EFCORE04
                 return;
             }
 
-            var status = customerAccountAffectll.First(ca => ca.CustomerId == customerId).AccountStatus;
+            // Safe lookup after confirming list is not empty
+            var referenceAccount = customerAccountAffectll
+                .FirstOrDefault(ca => ca.CustomerId == customerId);
 
-            if (status == AccountStatus.Active) status = AccountStatus.Closed;
-            else status = AccountStatus.Active;
+            if (referenceAccount == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Customer ID Not Found for this Account");
+                Console.ResetColor();
+                return;
+            }
 
-          
+            // Toggle status based on the specific customer's current status
+            var newStatus = referenceAccount.AccountStatus == AccountStatus.Active
+                ? AccountStatus.Closed
+                : AccountStatus.Active;
+
+
+
 
             foreach (var account in customerAccountAffectll)
             {
-                account.AccountStatus = status;
+                account.AccountStatus = newStatus;
             }
             db.SaveChanges();
 
