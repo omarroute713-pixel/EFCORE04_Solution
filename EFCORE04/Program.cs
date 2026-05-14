@@ -406,11 +406,6 @@ namespace EFCORE04
             var customerAccountAffectll = db.CustomerAccounts
                .Where(ca => ca.AccountId == accountNumber);
 
-            var status = customerAccountAffectll.First(ca => ca.CustomerId == customerId).AccountStatus;
-
-            if (status == AccountStatus.Active) status = AccountStatus.Closed;
-            else status = AccountStatus.Active;
-
             if (customerAccountAffectll.Count() == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -418,6 +413,13 @@ namespace EFCORE04
                 Console.ResetColor();
                 return;
             }
+
+            var status = customerAccountAffectll.First(ca => ca.CustomerId == customerId).AccountStatus;
+
+            if (status == AccountStatus.Active) status = AccountStatus.Closed;
+            else status = AccountStatus.Active;
+
+          
 
             foreach (var account in customerAccountAffectll)
             {
