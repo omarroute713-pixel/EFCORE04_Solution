@@ -402,8 +402,14 @@ namespace EFCORE04
             int customerId = ReadInt("Customer Id: ");
 
             #region One Customer Afect All Joint Accounts For All Customers
+
             var customerAccountAffectll = db.CustomerAccounts
                .Where(ca => ca.AccountId == accountNumber);
+
+            var status = customerAccountAffectll.First(ca => ca.CustomerId == customerId).AccountStatus;
+
+            if (status == AccountStatus.Active) status = AccountStatus.Closed;
+            else status = AccountStatus.Active;
 
             if (customerAccountAffectll.Count() == 0)
             {
@@ -412,11 +418,10 @@ namespace EFCORE04
                 Console.ResetColor();
                 return;
             }
-           
+
             foreach (var account in customerAccountAffectll)
             {
-                account.AccountStatus = account.AccountStatus == AccountStatus.Active ?
-                AccountStatus.Closed : AccountStatus.Active;
+                account.AccountStatus = status;
             }
             db.SaveChanges();
 
